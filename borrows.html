@@ -9,15 +9,60 @@
         <script>
             osql.requireLogin();
 
-            $(document).ready(async function () {
-                var me = await osql.getMe();
-                console.log(me);
-                var sql = `insert ignore into Users values('${me.id}', '${me.fname}', '${me.lname}');`;
-                await osql.connect(sql);
+            var me;
 
-                document.getElementById("firstname").innerHTML = me.fname;
-                document.getElementById("lastname").innerHTML = me.lname;
+            $(document).ready(async function () {
+                me = await osql.getMe();
+                document.getElementById('firstname').innerHTML = me.fname;
+                document.getElementById('lastname').innerHTML = me.lname;
+
+                await refreshBorrowing();
+                setInterval(refreshBorrowing, 2000);
             });
+
+
+            async function insertBorrowing() {
+                var userId = document.getElementById('userId').value;
+                var bookId = document.getElementById('bookId').value;
+                var dueDate = getDueDate();
+                var sql = "INSERT INTO borrowed_books (book_id, user_id, date) VALUES (" + bookId + ", " + userId + ", '" + dueDate + "');";
+                console.log("生成されたSQLクエリ:", sql);
+                osql.connectInsert(sql);
+                refreshBorrowing();
+        }
+
+        function getDueDate() {
+            var today = new Date();
+
+                // 年、月、日を取得
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2); // 月は0から始まるため、1を加えて2桁に整形
+            var day = ('0' + (today.getDate() + 7)).slice(-2);
+
+            // SQLのDATE型に入るようにフォーマットする
+            var formattedDate = year + '-' + month + '-' + day
+            return formattedDate
+        }
+
+        async function refreshBorrowing() {
+            var sql = 'SELECT borrowed_books.id, users.name AS user_name, books.name AS book_name, books.author AS book_author, borrowed_books.date FROM borrowed_books JOIN users ON borrowed_books.user_id = users.id JOIN books ON borrowed_books.book_id = books.id;';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = '<tr><th>貸出ID</th><th>利用者</th><th>本のタイトル</th><th>著者</th><th>貸出期限</th></tr>'
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + `<td>${object.id}</td>`;
+                html = html + `<td>${object.user_name}</td>`;
+                html = html + `<td>${object.book_name}</td>`;
+                html = html + `<td>${object.book_author}</td>`;
+                html = html + `<td>${object.date}</td>`;
+                html = html + '</tr>';
+            }
+            document.getElementById('borrowing').innerHTML = html;
+        }
+
 
             function logout() {
                 osql.logout();
@@ -43,37 +88,16 @@
 
             <!-- 貸出の追加 -->
             <h2>貸出の追加</h2>
-            <form id="borrowForm">
                 <label for="borrowUser">利用者ID:</label>
-                <input type="text" id="userSearch" />
+                <input type="text" id="userId" />
                 <label for="borrowBook">本ID:</label>
-                <input type="text" id="bookSearch" />
-                <button type="submit">貸出を追加</button>
-            </form>
+                <input type="text" id="bookId" />
+                <button onclick="insertBorrowing()">貸出を追加</button>
 
             <h3>貸出中一覧</h3>
             <table id="databaseTable">
-                <tr>
-                    <th>貸出ID</th>
-                    <th>名前</th>
-                    <th>本</th>
-                    <th>著者</th>
-                </tr>
-                <!-- ここにデータベースから取得した行を挿入 -->
-                <tr>
-                    <td>112</td>
-                    <td>山田 太郎</td>
-                    <td>人間失格</td>
-                    <td>太宰治</td>
-                </tr>
-                <tr>
-                    <td>113</td>
-                    <td>鈴木 一郎</td>
-                    <td>吾輩は猫である</td>
-                    <td>夏目漱石</td>
-                </tr>
+                <tbody id="borrowing"></tbody>
             </table>
         </div>
-        <script src="app.js"></script>
     </body>
 </html>
