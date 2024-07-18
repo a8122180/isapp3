@@ -16,9 +16,37 @@
                 document.getElementById('firstname').innerHTML = me.fname;
                 document.getElementById('lastname').innerHTML = me.lname;
     
-                await refreshRooms();
-                setInterval(refreshRooms, 2000);
+                await refreshBorrowing();
+                setInterval(refreshBorrowing, 2000);
             });
+
+            async function deleteBorrowedBooks() {
+            var borrowId = document.getElementById('borrowId').value;
+            var sql = "DELETE FROM borrowed_books WHERE id = " + borrowId + ";";
+            console.log("生成されたSQLクエリ:", sql);
+            osql.connect(sql);
+            refreshBorrowing();
+        }
+
+        async function refreshBorrowing() {
+            var sql = 'SELECT borrowed_books.id, users.name AS user_name, books.name AS book_name, books.author AS book_author, borrowed_books.date FROM borrowed_books JOIN users ON borrowed_books.user_id = users.id JOIN books ON borrowed_books.book_id = books.id;';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = '<tr><th>貸出ID</th><th>利用者</th><th>本のタイトル</th><th>著者</th><th>貸出期限</th></tr>'
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + `<td>${object.id}</td>`;
+                html = html + `<td>${object.user_name}</td>`;
+                html = html + `<td>${object.book_name}</td>`;
+                html = html + `<td>${object.book_author}</td>`;
+                html = html + `<td>${object.date}</td>`;
+                html = html + '</tr>';
+            }
+            document.getElementById('borrowing').innerHTML = html;
+        }
+
             function logout() {
             osql.logout();
         }
@@ -43,35 +71,14 @@
 
             <!-- 貸出の追加 -->
             <h2>本の返却</h2>
-            <form id="borrowForm">
                 <label for="borrowUser">貸出ID:</label>
-                <input type="text" id="userSearch" placeholder="貸出IDを入力" />
-                <button type="submit">本を返却</button>
-            </form>
+                <input type="text" id="borrowId" placeholder="貸出IDを入力" />
+                <button onclick="deleteBorrowedBooks()">本を返却</button>
 
             <h3><h3>貸出中一覧</h3></h3>
             <table id="databaseTable">
-                <tr>
-                    <th>貸出ID</th>
-                    <th>名前</th>
-                    <th>本</th>
-                    <th>著者</th>
-                </tr>
-                <!-- ここにデータベースから取得した行を挿入 -->
-                <tr>
-                    <td>112</td>
-                    <td>山田 太郎</td>
-                    <td>人間失格</td>
-                    <td>太宰治</td>
-                </tr>
-                <tr>
-                    <td>113</td>
-                    <td>鈴木 一郎</td>
-                    <td>吾輩は猫である</td>
-                    <td>夏目漱石</td>
-                </tr>
+                <tbody id="borrowing"></tbody>
             </table>
         </div>
-        <script src="app.js"></script>
     </body>
 </html>
