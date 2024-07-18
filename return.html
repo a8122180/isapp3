@@ -1,11 +1,34 @@
 <!DOCTYPE html>
 <html lang="ja">
     <head>
-        <meta charset="UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>返却管理</title>
         <link rel="stylesheet" href="styles.css" />
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <script type="text/javascript" src="lib/osql.js"></script>
+        <script>
+            osql.requireLogin();
+    
+            var me;
+    
+            $(document).ready(async function () {
+                me = await osql.getMe();
+                document.getElementById('firstname').innerHTML = me.fname;
+                document.getElementById('lastname').innerHTML = me.lname;
+    
+                await refreshRooms();
+                setInterval(refreshRooms, 2000);
+            });
+            function logout() {
+            osql.logout();
+        }
+    </script>
     </head>
     <body>
+        <div style="text-align: right">
+            ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+            <a href="javascript:logout()">logout</a>
+        </div>
         <div class="container">
             <h1>返却管理</h1>
             <nav>
