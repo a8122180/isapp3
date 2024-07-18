@@ -16,9 +16,35 @@
                 document.getElementById('firstname').innerHTML = me.fname;
                 document.getElementById('lastname').innerHTML = me.lname;
     
-                await refreshRooms();
-                setInterval(refreshRooms, 2000);
+                await refreshBooks();
+                setInterval(refreshBooks, 2000);
             });
+
+            async function insertBook() {
+            var bookTitle = document.getElementById('bookTitle').value;
+            var bookAuthor = document.getElementById('bookAuthor').value;
+            var sql = "INSERT INTO books (name, author) VALUES ('" + bookTitle + "', '" + bookAuthor + "');";
+            console.log("生成されたSQLクエリ:", sql);
+            osql.connectInsert(sql);
+            refreshBooks();
+        }
+
+        async function refreshBooks() {
+            var sql = 'select * from books;';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = '<tr><th>ID</th><th>タイトル</th><th>著者</th></tr>'
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + `<td>${object.id}</td>`;
+                html = html + `<td>${object.name}</td>`;
+                html = html + `<td>${object.author}</td>`;
+                html = html + '</tr>';
+            }
+            document.getElementById('books').innerHTML = html;
+        }
 
             function logout() {
                 osql.logout();
@@ -44,34 +70,16 @@
 
             <!-- 本の追加 -->
             <h2>本の追加</h2>
-            <form id="bookForm">
                 <label for="bookTitle">本のタイトル:</label>
                 <input type="text" id="bookTitle" name="bookTitle" required />
                 <label for="bookAuthor">著者:</label>
                 <input type="text" id="bookAuthor" name="bookAuthor" required />
-                <button type="submit">本を追加</button>
-            </form>
+                <button onclick="insertBook()">本を追加</button>
 
             <h3>保存された本</h3>
             <table id="databaseTable">
-                <tr>
-                    <th>ID</th>
-                    <th>本のタイトル</th>
-                    <th>著者</th>
-                </tr>
-                <!-- ここにデータベースから取得した行を挿入 -->
-                <tr>
-                    <td>143</td>
-                    <td>人間失格</td>
-                    <td>太宰治</td>
-                </tr>
-                <tr>
-                    <td>144</td>
-                    <td>吾輩は猫である</td>
-                    <td>夏目漱石</td>
-                </tr>
+                <tbody id="books"></tbody>
             </table>
         </div>
-        <script src="app.js"></script>
     </body>
 </html>
