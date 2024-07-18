@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <title>図書館貸出管理システム</title>
+        <link rel="stylesheet" href="styles.css" />
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <script type="text/javascript" src="lib/osql.js"></script>
+        <script>
+            osql.requireLogin();
+
+            $(document).ready(async function () {
+                var me = await osql.getMe();
+                console.log(me);
+                var sql = `insert ignore into Users values('${me.id}', '${me.fname}', '${me.lname}');`;
+                await osql.connect(sql);
+
+                document.getElementById("firstname").innerHTML = me.fname;
+                document.getElementById("lastname").innerHTML = me.lname;
+            });
+
+            function logout() {
+                osql.logout();
+            }
+        </script>
+    </head>
+    <body>
+        <div style="text-align: right">
+            ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+            <a href="javascript:logout()">logout</a>
+        </div>
+        <div class="container">
+            <h1>図書館貸出管理システム</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">ホーム</a></li>
+                    <li><a href="users.html">利用者登録</a></li>
+                    <li><a href="books.html">本の登録</a></li>
+                    <li><a href="borrows.html">貸出管理</a></li>
+                    <li><a href="return.html">返却管理</a></li>
+                </ul>
+            </nav>
+
+            <h3>貸出中一覧</h3>
+            <table id="databaseTable">
+                <tr>
+                    <th>貸出ID</th>
+                    <th>名前</th>
+                    <th>本のタイトル</th>
+                    <th>著者</th>
+                </tr>
+                <!-- ここにデータベースから取得した行を挿入 -->
+                <tr>
+                    <td>112</td>
+                    <td>山田 太郎</td>
+                    <td>人間失格</td>
+                    <td>太宰治</td>
+                </tr>
+                <tr>
+                    <td>113</td>
+                    <td>鈴木 一郎</td>
+                    <td>吾輩は猫である</td>
+                    <td>夏目漱石</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

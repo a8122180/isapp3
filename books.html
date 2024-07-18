@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>本の登録</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>本の登録</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">ホーム</a></li>
+                    <li><a href="users.html">利用者登録</a></li>
+                    <li><a href="books.html">本の登録</a></li>
+                    <li><a href="borrows.html">貸出管理</a></li>
+                    <li><a href="return.html">返却管理</a></li>
+                </ul>
+            </nav>
+
+            <!-- 本の追加 -->
+            <h2>本の追加</h2>
+            <form id="bookForm">
+                <label for="bookTitle">本のタイトル:</label>
+                <input type="text" id="bookTitle" name="bookTitle" required />
+                <label for="bookAuthor">著者:</label>
+                <input type="text" id="bookAuthor" name="bookAuthor" required />
+                <button type="submit">本を追加</button>
+            </form>
+
+            <h3>保存された本</h3>
+            <table id="databaseTable">
+                <tr>
+                    <th>ID</th>
+                    <th>本のタイトル</th>
+                    <th>著者</th>
+                </tr>
+                <!-- ここにデータベースから取得した行を挿入 -->
+                <tr>
+                    <td>143</td>
+                    <td>人間失格</td>
+                    <td>太宰治</td>
+                </tr>
+                <tr>
+                    <td>144</td>
+                    <td>吾輩は猫である</td>
+                    <td>夏目漱石</td>
+                </tr>
+            </table>
+        </div>
+        <script src="app.js"></script>
+    </body>
+</html>

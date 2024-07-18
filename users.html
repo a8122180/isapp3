@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>利用者登録</title>
+        <link rel="stylesheet" href="styles.css" />
+        
+    </head>
+    <body>
+        <div class="container">
+            <h1>利用者登録</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">ホーム</a></li>
+                    <li><a href="users.html">利用者登録</a></li>
+                    <li><a href="books.html">本の登録</a></li>
+                    <li><a href="borrows.html">貸出管理</a></li>
+                    <li><a href="return.html">返却管理</a></li>
+                </ul>
+            </nav>
+
+            <!-- 利用者の追加 -->
+            <h2>利用者の追加</h2>
+            <form id="userForm">
+                <label for="username">利用者名:</label>
+                <input type="text" id="username" name="username" required />
+                <button type="submit">利用者を追加</button>
+            </form>
+
+            <h3>保存された利用者</h3>
+            <table id="databaseTable">
+                <tr>
+                    <th>ID</th>
+                    <th>名前</th>
+                </tr>
+                <!-- ここにデータベースから取得した行を挿入 -->
+                <tr>
+                    <td>123</td>
+                    <td>山田 太郎</td>
+                </tr>
+                <tr>
+                    <td>124</td>
+                    <td>鈴木 一郎</td>
+                </tr>
+            </table>
+        </div>
+        <script src="app.js"></script>
+    </body>
+</html>

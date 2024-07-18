@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>返却管理</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>返却管理</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">ホーム</a></li>
+                    <li><a href="users.html">利用者登録</a></li>
+                    <li><a href="books.html">本の登録</a></li>
+                    <li><a href="borrows.html">貸出管理</a></li>
+                    <li><a href="return.html">返却管理</a></li>
+                </ul>
+            </nav>
+
+            <!-- 貸出の追加 -->
+            <h2>本の返却</h2>
+            <form id="borrowForm">
+                <label for="borrowUser">貸出ID:</label>
+                <input type="text" id="userSearch" placeholder="貸出IDを入力" />
+                <button type="submit">本を返却</button>
+            </form>
+
+            <h3><h3>貸出中一覧</h3></h3>
+            <table id="databaseTable">
+                <tr>
+                    <th>貸出ID</th>
+                    <th>名前</th>
+                    <th>本</th>
+                    <th>著者</th>
+                </tr>
+                <!-- ここにデータベースから取得した行を挿入 -->
+                <tr>
+                    <td>112</td>
+                    <td>山田 太郎</td>
+                    <td>人間失格</td>
+                    <td>太宰治</td>
+                </tr>
+                <tr>
+                    <td>113</td>
+                    <td>鈴木 一郎</td>
+                    <td>吾輩は猫である</td>
+                    <td>夏目漱石</td>
+                </tr>
+            </table>
+        </div>
+        <script src="app.js"></script>
+    </body>
+</html>
